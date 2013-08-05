@@ -1,13 +1,13 @@
 /* 
- ____                              ____   ___  _     
-|  _ \ ___ _ __   __ _ ___  ___   / ___| / _ \| |    
-| |_) / _ \ '_ \ / _` / __|/ _ \  \___ \| | | | |    
-|  _ <  __/ |_) | (_| \__ \ (_) |  ___) | |_| | |___ 
-|_| \_\___| .__/ \__,_|___/\___/  |____/ \__\_\_____|
-          |_|                                        
+   ____                    ____   ___  _     
+ / ___|   _ _ __ ___  ___/ ___| / _ \| |    
+| |  | | | | '__/ __|/ _ \___ \| | | | |    
+| |__| |_| | |  \__ \ (_) |__) | |_| | |___ 
+ \____\__,_|_|  |___/\___/____/ \__\_\_____|
+                                            
 
 						Kamisama666
-						v 1.3 
+						v 1.4 
 
 Todos los ejemplos y explicaciones están basados en la base de datos MySQL (aplicable también a MariaDB).
 En otras pueden variar algunas cosas.
@@ -46,16 +46,17 @@ drop database accidentes;
 --Crear tabla de forma normal
 
 --Para crear una tabla usamos la istrucción: create table <nombre_tabla>
---Despues abrimos un parentesis en el que especificamos 
+--Despues abrimos un parentesis en el que especificamos las columnas de la tabla con la estructura:
+-- <nombre_columna> <tipo_dato>,
 create table atropellados ( 
-	nombre varchar(10)  not null,
-	 apellidos varchar(20)  not null,
-	  equipo varchar(20)  not null
+	nombre varchar(10)  not null, --not null impide que el campo pueda dejarse vacio al introducir datos
+	 apellidos varchar(20)  not null, --cada definicion de columna debe terminar con ","
+	  equipo varchar(20)  not null --la ultima sentencia no necesita una ","
 	  );
 
 --Definir una clave primaria
 create table atropellados ( 
-	nombre varchar(10) primary key not null,
+	nombre varchar(10) primary key, --la clave primaria es "not null" por defecto
 	 apellidos varchar(20)  not null,
 	  equipo varchar(20)  not null
 	  );
@@ -76,7 +77,7 @@ create table atropellados (
 	  primary key (nombre)
 	  );
 
---tambien se puede crear una referencia de esta forma:
+--tambien se puede crear una referencia a otra tabla de esta forma:
 
 create table atropellados ( 
 	nombre varchar(10)  not null,
@@ -86,7 +87,8 @@ create table atropellados (
 	  foreign key (equipo) references equipos(nombre)
 	  );
 
--- A la hora de hacer referencias podemos asignar un nombre a esta referencias para despues modificarla o eliminarla facimente
+-- A la hora de hacer referencias podemos asignar un nombre a esta referencias para despues modificarla o 
+--eliminarla facimente
 
 create table atropellados ( 
 	nombre varchar(10)  not null,
@@ -96,16 +98,17 @@ create table atropellados (
 	  constraint ref_equipo foreign key (equipo) references equipos(nombre)
 	  );
 
--- Si no recordamos el nombre de la referencia o no le hemos asignado uno (por lo que se habrá asignado uno automaticamente) podemos
---averiguar su nombre mirando los comandos con los que se creo la tabla. 
+-- Si no recordamos el nombre de la referencia o no le hemos asignado uno (por lo que se habrá asignado 
+--uno automaticamente) podemos averiguar su nombre mirando los comandos con los que se creo la tabla. 
 
 show create table atropellados;
 
---La eliminacion de la referencia se vera mas adelante
+--La eliminacion de la referencia se verá mas adelante
 
---Por ultimo, al crear la tabla podemos definir el motor de almacenamiento. Este determina el modo en que la base de datos trabaja con 
---la tabla. POr defecto el motor es "myIsam" que es rapido pero no tiene integridad referencial. El que sí lo tiene es "innodb".
---Para especificar el motor se pone la opcion "engine":
+--Por ultimo, al crear la tabla podemos definir el motor de almacenamiento. Este determina el modo en 
+--que la base de datos trabaja con la tabla. POr defecto el motor es "myIsam" que es rapido pero no 
+--tiene integridad referencial. El que sí lo tiene es "innodb". Para especificar el motor se pone 
+--la opcion "engine":
 
 CREATE TABLE Empleados_backup (
   CodigoEmpleado integer primary key NOT NULL,
@@ -114,10 +117,12 @@ CREATE TABLE Empleados_backup (
   ) engine=innodb;
 
 
---crear tabla copiando las columnas y el contenido de otra tabla a través de un select (también podriamos usar filtros y todo lo de las consultas)
+--crear tabla copiando las columnas y el contenido de otra tabla a través de un select 
+--(también podriamos usar filtros y todo lo de las consultas que veremos más adelante)
 
 Create table Empleados_backup select * from Empleados;
---Al crearla así no se copian las referencias ni las restricciones o las claves primarias por lo que hay que crearlas a mano con Alter
+--Al crearla así no se copian las referencias ni las restricciones o las claves primarias por lo que 
+--hay que crearlas a mano con Alter
 
 --También se pueden coger sólo algunas columnas
 
@@ -127,7 +132,7 @@ Create table Empleados_backup select Nombre,Apellido1 from Empleados;
 --! Modificación de tablas
 
 --Añadir una columna
-alter table atropellados add codigo int primary key first; --con firs le decimos que la coloque al principio. S
+alter table atropellados add codigo int primary key first; --con first le decimos que la coloque al principio. S
 alter table atropellados add codigo int primary key after nombre; -- con after <nombre columna> le decimos que lo ponga despues de esa columna
 alter table libros add constraint ref_libroautor FOREIGN KEY (`escritor`) REFERENCES `autores` (`idautor`); --añadimos una clave foranea
 
@@ -150,19 +155,20 @@ drop table atro;
 
 --! Restricciones
 /*
-Las restricciones nos permiten determinar lo que ocurre cuando con los datos de un campo cuando se modifican los
-datos de un campo al que hacemos referencia. Existen dos ocasiones que podemos controla:
+Las restricciones nos permiten determinar lo que ocurre cuando con los datos de un campo cuando se 
+modifican los datos de un campo al que hacemos referencia. Existen dos ocasiones que podemos controla:
 	-On update: cuando se modifican los datos
 	-On delete: cuando se borran  los datos
 Y tres cosas que podemos hacer cuando ocurre estas acciones:
-	-No action: impedimos que se borre o se modifique. Para poder hacer deberemos eliminar o modificar la referencia
-	-Cascade: se aplica la misma accion que a la tabla padre. Es decir, si borramos un campo tambien se borra el campo que 
-	lo esta referenciando
+	-No action: impedimos que se borre o se modifique. Para poder hacer deberemos eliminar o modificar 
+	la referencia
+	-Cascade: se aplica la misma accion que a la tabla padre. Es decir, si borramos un campo tambien 
+	se borra el campo que lo esta referenciando
 	-set null: se deja a NULL los campos que hacen la referencia
 	*/
 
---Ejemplo: cuando se modifiquen campos en la tabla padre que tambien lo hagan en la tabla hijo y cuando se borren 
---que se ponga a NULL en la hijo
+--Ejemplo: cuando se modifiquen campos en la tabla padre que tambien lo hagan en la tabla hijo 
+--y cuando se borren que se ponga a NULL en la hijo
 
 	CREATE TABLE Empleados_backup (
   CodigoEmpleado integer primary key NOT NULL,
@@ -180,7 +186,7 @@ insert into atropellados values ('Sergio','Tarde','DAM'); --como no especificamo
 insert into atropellados (nombre,apellidos,equipo) values ('Falete','Chuleton','Pata Negra'); --también podemos especificar las columnas en las que queremos introducir los datos
 
 --Podemos insertar varias filas al mismo tiempo separandolo por comas
-insert into autores values (2,"Lope de vega","1652-07-21"),(3,"Thomas Mann","1780-02-21");cd
+insert into autores values (2,"Lope de vega","1652-07-21"),(3,"Thomas Mann","1780-02-21");
 
 --Insertar datos de otras tablas (para poder hacerlo deberan tener el mismo numero de columnas y ser del mismo tipo, el nombre da igual)
 insert into Empleados_backup select * from Empleados; 
