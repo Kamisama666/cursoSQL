@@ -11,3 +11,6 @@ Todos los ejemplos y explicaciones están basados en la base de datos MySQL (apl
 En otras pueden variar algunos aspectos. Para su correcta visualización es recomendable usar un editor de texto
 plano avanzo como Sublime Text o Vim pero cualquier otro más simple será suficiente.
 
+Para la realización de la mayoría de los ejemplos se usaran dos bases de datos: jardineria y nba. El codigo fuente de 
+ambas se distribuye junto con el curso.
+
