@@ -1,3 +1,5 @@
+create database jardineria;
+use jardineria;
 CREATE TABLE Oficinas (
   CodigoOficina varchar(10) NOT NULL,
   Ciudad varchar(30) NOT NULL,

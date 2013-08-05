@@ -7,14 +7,28 @@
           |_|                                        
 
 						Kamisama666
-						v 1.2 
+						v 1.3 
 
 Todos los ejemplos y explicaciones están basados en la base de datos MySQL (aplicable también a MariaDB).
 En otras pueden variar algunas cosas.
 
 Para la realización de la mayoría de los ejemplos se usaran dos bases de datos: jardineria y nba. 
 El codigo fuente de ambas se distribuye junto con el curso.
+
+
+Para ejecutar los archivos de texto con el codigo (como el de las bases de datos que usaremos)deberas 
+usar el comando:
+source <ruta_archivo>;
+
+Todas las sentencias sql deberan finalizar con el caracter ";".
 */
+
+--! Comandos utiles
+
+show databases; --muestra las bases de datos que tenemos creadas
+use <nombre_database> --selecciona una base de datos para trabajar con ella;
+show tables; --Muestra las tablas que contiene la base de datos que tenemos seleccionada
+describe <nombre_tabla>; --muestra las columnas y su información de una tabla de la base de datos seleccionada
 
 
 --! Creacion de bases de datos--------------------------------------------------------
