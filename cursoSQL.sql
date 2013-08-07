@@ -7,7 +7,7 @@
                                             
 
 						Kamisama666
-						v 1.4 
+						v 1.5 
 
 Todos los ejemplos y explicaciones están basados en la base de datos MySQL (aplicable también a MariaDB).
 En otras pueden variar algunas cosas.
@@ -449,6 +449,9 @@ para pasar de una tabla a otra hasta llegar a la que necesitamos para obtener da
 --Empleados.CodigoOficina=Oficinas.CodigoOficina
 select Nombre,Ciudad from Empleados join Oficinas on Empleados.CodigoOficina=Oficinas.CodigoOficina;
 
+select NombreCliente,Oficinas.Ciudad from Clientes 
+join Empleados on Clientes.CodigoEmpleadoRepVentas=Empleados.CodigoEmpleado 
+join Oficinas on Empleados.CodigoOficina=Oficinas.CodigoOficina;
 
 --Natural join: funciona igual que el inner pero no hace falta indicarle los campos que conforman la 
 --relacion sino que los detecta automaticamente. Para que esto sea posible los dos campos han de llamarse 
@@ -467,11 +470,11 @@ representantes. Con el outer join, sim embargo, nos devolverá tanto los que tie
 que no. Pero para eso hemos de indicarle que la que queremos que tenga prioridad y, por tanto,nos muestre
  aunque no tenga relacion es la de la derecha (right) ya que es el lado de la tabla de empleados:
 */
-select NombreCliente,Nombre from Clientes right outer join Empleados on CodigoEmpleadoRepVentas = CodigoEmpleado;
+select Nombre,NombreCliente from Clientes right outer join Empleados on CodigoEmpleadoRepVentas = CodigoEmpleado;
 --Esta consulta nos muestra todos los empleados y sus clientes. Si no tiene ninguno asignado, dado que 
 --le hemos dado prioridad a esa tabla, nos mostrara un null en los clientes. Si quisieramos hacerlo al 
 --reves usariamos "left outer join".
-select NombreCliente,Nombre from Clientes right outer join Empleados on CodigoEmpleadoRepVentas = CodigoEmpleado;
+select NombreCliente,Nombre from Clientes left outer join Empleados on CodigoEmpleadoRepVentas = CodigoEmpleado;
 --Esta hara lo mismo que un join normal ya que se conserva la tabla de clientes y se pierde los datos de 
 --la de empleados que no tengan relacion con ella.
 
