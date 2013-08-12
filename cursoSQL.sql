@@ -7,7 +7,7 @@
                                             
 
 						Kamisama666
-						v 1.5 
+						v 1.6 
 
 Todos los ejemplos y explicaciones están basados en la base de datos MySQL (aplicable también a MariaDB).
 En otras pueden variar algunas cosas.
@@ -23,6 +23,7 @@ source <ruta_archivo>;
 Todas las sentencias sql deberan finalizar con el caracter ";".
 */
 
+---------------------------------------------------------------------------------------
 --! Comandos utiles
 
 show databases; --muestra las bases de datos que tenemos creadas
@@ -31,7 +32,8 @@ show tables; --Muestra las tablas que contiene la base de datos que tenemos sele
 describe <nombre_tabla>; --muestra las columnas y su información de una tabla de la base de datos seleccionada
 
 
---! Creacion de bases de datos--------------------------------------------------------
+---------------------------------------------------------------------------------------
+--! Creacion de bases de datos
 
 
 --crear base de datos
@@ -41,7 +43,8 @@ create database accidentes;
 drop database accidentes;
 
 
---! Creacion y modificación de tablas-------------------------------------------------------
+---------------------------------------------------------------------------------------
+--! Creacion y modificación de tablas
 
 --Crear tabla de forma normal
 
@@ -129,6 +132,9 @@ Create table Empleados_backup select * from Empleados;
 Create table Empleados_backup select Nombre,Apellido1 from Empleados;
 
 
+
+
+---------------------------------------------------------------------------------------
 --! Modificación de tablas
 
 --Añadir una columna
@@ -153,6 +159,7 @@ drop table atro;
 
 
 
+---------------------------------------------------------------------------------------
 --! Restricciones
 /*
 Las restricciones nos permiten determinar lo que ocurre cuando con los datos de un campo cuando se 
@@ -178,7 +185,8 @@ Y tres cosas que podemos hacer cuando ocurre estas acciones:
 
 
 
---! Modificación del contenido de tablas------------------------------------------------
+---------------------------------------------------------------------------------------
+--! Modificación del contenido de tablas
 
 
 --Insertar datos en una tabla
@@ -205,7 +213,10 @@ delete from Empleados_backup where CodigoEmpleado in (select CodigoEmpleadoRepVe
 update Empleados_backup set Nombre='Marika' where Nombre='Mariko'; --Decimos que donde (where) la colummna Nombre sea igual a 'Mariko' lo cambiamos por el valor 'Marika'
 
 
---! Consultas -------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------
+--! Consultas 
 
 /*Las consultas nos permiten recuperar los datos guardados en la base de datos. Su estructura básica es:
 
@@ -228,6 +239,9 @@ select distinct Nombre_equipo from jugadores;
 --en una de ellas no las juntara. Por ejemplo, en esta no lo haría ya que los nombres no se repiten:
 select distinct Nombre,Nombre_equipo from jugadores;
 
+
+
+---------------------------------------------------------------------------------------
 --! Filtros
 /*
 Los filtros nos permiten filstrar el resultado de una consulta en funcion de las condiciones que especifiquemos
@@ -282,6 +296,7 @@ select equipo_local,sum(puntos_local) from partidos group by equipo_local;
 
 
 
+---------------------------------------------------------------------------------------
 --! LIMIT 
 --con limit podemos limitar el número de filas que nos devuelve la consulta
 
@@ -293,6 +308,7 @@ select * from jugadores limit 5,10; --Este nos cogerá 10 filas empezando por la
 
 
 
+---------------------------------------------------------------------------------------
 --! PATRONES
 
 /* Los patrones nos permiten filtrar usando caracteres especiales que pueden ser sustituidos por otros
@@ -305,7 +321,9 @@ select * from jugadores where Nombre like 'Mar%';
 select * from jugadores where Nombre like 'Mart_';
 
 
---! ORDENAR
+
+---------------------------------------------------------------------------------------
+--! ORDER BY
 
 /* Podemos ordenar la salida de una consulta usando un campo como criterio y eligiendo un orden 
 con el ultimo arriba o descendente (ASC) o con el primero arriba o descendente (DESC)
@@ -325,6 +343,8 @@ select * from jugadores order by codigo desc limit 10;
 
 
 
+
+---------------------------------------------------------------------------------------
 --! HAVING
 
 --Having se usa para filtrar (exactamente como el while) cuando dentro del filtro usamos una sentencia resumen
@@ -341,7 +361,22 @@ select Nombre_equipo,avg(peso) from jugadores  where peso>120 group by Nombre_Eq
 
 
 
+---------------------------------------------------------------------------------------
+--! UNION
+--Union permite concatenar la salida de varias consultas en una sola fila
 
+select Nombre from Empleados union select NombreCliente from Clientes; --De esta forma los nombres
+--de los clientes y los empleados aparecerían todos en una misma fila, primero los empleados
+--y luego los clientes
+
+--Por defecto UNION solo devuelve los valores que no están duplicados. Es decir, si un empleado
+--se llamara igual que un cliente ese nombre solo aprecería una vez. Para evitar esto se usa
+--UNION ALL que los devuelve todos, se repitan o no.
+
+
+
+
+---------------------------------------------------------------------------------------
 --! EJEMPLO PRACTICO DE REPASO
 
 --En esta consulta queremos coger el nombre y el numero de jugadores españoles de los equipos que tengan un
@@ -384,6 +419,8 @@ select Nombre_equipo,count(*) from jugadores where procedencia='Spain' group by 
 
 
 
+
+---------------------------------------------------------------------------------------
 --! SUBCONSULTAS
 /* 
 Con ellas podemos filtrar comparando un valor con el resultado de una consulta (la consullta 
@@ -436,6 +473,8 @@ select Nombre from jugadores where peso>ANY(select Peso from jugadores);
 
 
 
+
+---------------------------------------------------------------------------------------
 --! Composiciones
 /* 
 Las composiciones son uniones que nos permite realizar consultas a traves de varias tablas.
@@ -481,8 +520,10 @@ select NombreCliente,Nombre from Clientes left outer join Empleados on CodigoEmp
 
 
 
+---------------------------------------------------------------------------------------
 /* 
-Consultas recursivas: en ocasiones hemos de realizar una consulta usando una relacion que enlaza con si misma. Para poder
+--! Consultas recursivas 
+En ocasiones hemos de realizar una consulta usando una relacion que enlaza con si misma. Para poder
 hacerlo hemos de crear a partir de la tabla origina dos tablas simbolicas que nos permitan referenciarlas por separado.
 Para ello referenciaremos a la tabla usando dos alias diferentes que representen a las tablas simbolicas.
 */
@@ -499,9 +540,10 @@ select emp.Nombre as empleado,jefe.Nombre as jefe from Empleados emp join Emplea
 
 
 
-
+---------------------------------------------------------------------------------------
 /*
-Consultas derivadas: podemos usar una consulta como si fuera una tabla y realizar consultas de ella. 
+--!Consultas derivadas 
+Podemos usar una consulta como si fuera una tabla y realizar consultas de ella. 
 */
 --Por ejemplo, tomemos el resultado de esta consulta y consideremos que con él hacemos otra tabla llamada 
 --tabladerivada
@@ -511,6 +553,9 @@ select Fax as Fax2 from (select NombreCliente,Fax from Clientes) as tabladerivad
 --Al usar tablas derivadas siempre hemos de usar "as" para darle un nombre de forma que podamos refernciarla
 
 
+
+
+---------------------------------------------------------------------------------------
 --! Ejemplo final
 /*
 Sacar el nombre de los clientes y el nombre de sus representantes junto con la ciudad de la oficina a la que
